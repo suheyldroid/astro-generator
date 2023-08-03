@@ -1,0 +1,56 @@
+{
+  "routes": [
+    {
+      "title": "Home Page",
+      "link": "/",
+      "component": "page-component"
+    }
+  ],
+  "components": [
+    {
+      "id": "page-component",
+      "type": "classic",
+      "name": "Page Component",
+      "serverSideJs": "const a = 1;",
+      "clientSideJs": "console.log(a)",
+      "html": "<h1>{a}</h1>",
+      "args": [
+        {
+          "name": "arg1",
+          "type": "string",
+          "defaultValue": "arg 1 default val"
+        }
+      ],
+      "import": []
+    },
+    {
+      "id": "counter",
+      "type": "react",
+      "name": "React Counter Component",
+      "import": [
+        {
+          "from": "react",
+          "type": "module",
+          "import": {
+            "type": "named",
+            "names": [
+              "useState"
+            ]
+          }
+        },
+        {
+          "type": "component",
+          "id": "page-component"
+        }
+      ],
+      "jsx": "const [counter, setCounter] = useState(0); \n return <><h1>{counter}</h1> <button onClick={() => setCounter(counter + 1)}>Add</button></>",
+      "args": [
+        {
+          "name": "arg1",
+          "type": "string",
+          "defaultValue": "arg 1 default val"
+        }
+      ]
+    }
+  ]
+}

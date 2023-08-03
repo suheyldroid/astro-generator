@@ -1,0 +1,14 @@
+{
+  "name": "astro-gen",
+  "version": "1.0.0",
+  "main": "main.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.4.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "dev": "ts-node main.ts"
+  }
+}

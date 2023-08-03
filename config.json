@@ -1,0 +1,56 @@
+{
+  "routes": [
+    {
+      "title": "Home Page",
+      "path": "/",
+      "component": "1"
+    }
+  ],
+
+  "components": [
+    {
+      "id": "1",
+      "type": "classic",
+      "name": "Page Component",
+      "serverSideJs": "const a = 1;",
+      "clientSideJs": "console.log(a)",
+      "html": "<h1>{a}</h1><Component_2 client:idle/>",
+      "args": [
+        {
+          "name": "arg1",
+          "type": "string",
+          "defaultValue": "arg 1 default val"
+        }
+      ],
+      "import": [
+        {
+          "type": "component",
+          "id": "2"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "type": "react",
+      "name": "React Counter Component",
+      "import": [
+        {
+          "from": "react",
+          "type": "module",
+          "import": {
+            "type": "named",
+            "names": ["useState"]
+          }
+        }
+      ],
+      "jsx": "const [counter, setCounter] = useState(0); \n return <><h1>{counter}</h1> <button onClick={() => setCounter(counter + 1)}>Add</button></>",
+      "args": [
+        {
+          "name": "arg1",
+          "type": "string",
+          "defaultValue": "arg 1 default val"
+        }
+      ]
+    }
+  ]
+}
