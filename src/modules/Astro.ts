@@ -1,9 +1,9 @@
 import { spawn } from "child_process";
 import { withAsyncSpawn } from "../helpers/async-spawn";
 import fs from "fs";
-import { Config } from "../../types/config.types";
-export class App {
-  constructor(readonly config: Config) {}
+import { App } from "../App";
+export class Astro {
+  constructor(readonly m: App) {}
   private async initializeAstro() {
     if (fs.existsSync("astro")) fs.rmdirSync("astro", { recursive: true });
     await withAsyncSpawn(

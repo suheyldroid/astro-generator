@@ -2,14 +2,17 @@ import {
   Arg,
   Component as ComponentType,
   Import,
-} from "../../../types/component.types";
-import { ComponentRegistry } from "../component/ComponentRegistry";
+} from "../../../../types/component.types";
+import { App } from "../../../App";
+import { ComponentRegistry } from "../../component/ComponentRegistry";
 
-export class GeneratorRegisty {
+export class GeneratorRegistry {
   private generators: Record<string, ComponentGenerator<any>> = {};
 
-  register(key: string, generator: ComponentGenerator<any>) {
-    this.generators[key] = generator;
+  constructor(readonly m: App) {}
+
+  register(generators: Record<string, ComponentGenerator<any>>) {
+    this.generators = generators;
   }
 
   get(key: string) {
@@ -23,12 +26,10 @@ export type ComponentGenerator<T = ComponentType> = (componentData: {
   imports: Import[];
   args: Arg[];
   component: T;
-}) => GeneratedComponent;
+}) => Promise<GeneratedComponent>;
 
 export type GeneratedComponent = {
   content: string;
   fileName: string;
   path: string;
 };
-
-export default new GeneratorRegisty();

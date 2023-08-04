@@ -1,0 +1,15 @@
+---
+// <%= name %>
+
+<% imports.forEach(_import => { %>
+<%- _import %> 
+<% }) %>
+<%= args %>
+<%= serverJs %>
+---
+
+<%- html %>
+
+<script define:vars={{<%- clientArgs.join(", ") %>}}>
+<%- clientJs %>
+</script>

@@ -1,18 +1,24 @@
-import { log } from "console";
-import { GeneratedComponent } from "../Generator/GeneratorRegistry";
+import { Component as ComponentType } from "../../../types/component.types";
+import { App } from "../../App";
+import { GeneratedComponent } from "../Component/Generator/GeneratorRegistry";
 import { Component } from "./Component";
 import fs from "fs";
 
 export class ComponentRegistry {
   private components: Component[] = [];
-  register(component: Component) {
-    this.components.push(component);
+
+  constructor(readonly m: App) {}
+
+  register(components: ComponentType[]) {
+    this.components = components.map((component) => new Component(component));
   }
   get(id: string) {
     return this.components.find((component) => component.component.id === id);
   }
-  generate() {
-    this.components.forEach((component) => component.generate(this));
+  async generate() {
+    for (const component of this.components) {
+      await component.generate(this, this.m.generatorRegistry);
+    }
   }
   sync() {
     this.components.forEach((component) => {
@@ -22,8 +28,6 @@ export class ComponentRegistry {
     });
   }
   private __sync(generatedComponent: GeneratedComponent) {
-    console.log(generatedComponent.path);
-    
     fs.writeFileSync(
       `astro/src${generatedComponent.path}`,
       generatedComponent.content

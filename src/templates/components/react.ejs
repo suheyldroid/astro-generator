@@ -1,0 +1,5 @@
+// <%= name %>
+<% imports.forEach(_import => { %>
+ <%- _import %>
+<% }) %> 
+export default function Component_<%=id %>(<% args .map((arg) => arg.name) .join(", ") %>) { <%- jsx %> }
