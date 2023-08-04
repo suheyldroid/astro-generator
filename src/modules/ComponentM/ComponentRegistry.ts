@@ -1,15 +1,16 @@
-import { Component as ComponentType } from "../../../types/component.types";
-import { App } from "../../App";
-import { GeneratedComponent } from "../Component/Generator/GeneratorRegistry";
-import { Component } from "./Component";
+import { App } from "@/App";
 import fs from "fs";
+import { GeneratedComponent } from "./Generator/GeneratorRegistry";
+
+import { Component } from "./Component";
+import { TComponent } from "@/types";
 
 export class ComponentRegistry {
   private components: Component[] = [];
 
   constructor(readonly m: App) {}
 
-  register(components: ComponentType[]) {
+  register(components: TComponent[]) {
     this.components = components.map((component) => new Component(component));
   }
   get(id: string) {

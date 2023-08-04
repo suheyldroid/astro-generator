@@ -1,11 +1,11 @@
-import { Config } from "../types/config.types";
 import { Astro } from "./modules/Astro";
 import {
   ComponentGenerator,
   GeneratorRegistry,
-} from "./modules/Component/Generator/GeneratorRegistry";
+} from "./modules/ComponentM/Generator/GeneratorRegistry";
 import { PageRegistry } from "./modules/Page/PageRegistry";
-import { ComponentRegistry } from "./modules/component/ComponentRegistry";
+import { ComponentRegistry } from "./modules/ComponentM/ComponentRegistry";
+import { TConfig } from "@/types";
 
 export class App {
   astro: Astro;
@@ -14,7 +14,7 @@ export class App {
   generatorRegistry: GeneratorRegistry;
 
   constructor(
-    readonly config: Config,
+    readonly config: TConfig,
     readonly generators: Record<string, ComponentGenerator<any>>
   ) {
     this.astro = new Astro(this);

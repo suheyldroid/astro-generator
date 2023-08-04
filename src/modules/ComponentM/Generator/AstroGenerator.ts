@@ -1,31 +1,25 @@
 import ejs from "ejs";
-import {
-  Arg,
-  ClassicComponent,
-  Import,
-} from "../../../../types/component.types";
+
 import { prepareImports } from "../../../helpers/generateImports";
 import { ComponentGenerator } from "./GeneratorRegistry";
 import _path from "path";
-import { existsSync } from "fs";
-export const AstroGenerator: ComponentGenerator<ClassicComponent> = async ({
+import { TAstroComponent } from "@/types";
+import { TProp } from "@/services/validation/schemas";
+export const AstroGenerator: ComponentGenerator<TAstroComponent> = async ({
   componentRegisty,
-  args,
-  imports,
-  name,
   component,
 }) => {
   const fileName = "component_" + component.id + ".astro";
   const path = "/components/" + fileName;
 
   const content = await ejs.renderFile("./src/templates/components/astro.ejs", {
-    name,
-    imports: prepareImports(imports, componentRegisty),
-    args: prepareArgs(args),
-    serverJs: component.serverSideJs,
-    clientJs: component.clientSideJs,
-    clientArgs: ["a"],
-    html: component.html,
+    name: component.name,
+    imports: prepareImports(component.imports, componentRegisty),
+    props: prepareArgs(component.props),
+    serverJs: component.serverJs,
+    clientJs: component.clientJs,
+    clientArgs: component.clientProps,
+    html: component.content,
   });
   return {
     content,
@@ -34,10 +28,12 @@ export const AstroGenerator: ComponentGenerator<ClassicComponent> = async ({
   };
 };
 
-const prepareArgs = (componentArgs: Arg[]) => {
+const prepareArgs = (componentArgs: TProp[]) => {
   let _args = "";
   componentArgs.forEach((arg) => {
-    _args += arg.default ? ` ${arg.name}=${arg.default}` : ` ${arg.name}`;
+    _args += arg.defaultValue
+      ? ` ${arg.name}=${arg.defaultValue}`
+      : ` ${arg.name}`;
   });
   _args = _args.trim();
   _args = `const {${_args}} = Astro.props;`;

@@ -1,15 +1,14 @@
-import { Component as ComponentType } from "../../../types/component.types";
+import { TComponent } from "@/types";
 import {
-  ComponentGenerator,
   GeneratedComponent,
   GeneratorRegistry,
-} from "../Component/Generator/GeneratorRegistry";
+} from "./Generator/GeneratorRegistry";
 import { ComponentRegistry } from "./ComponentRegistry";
 
 export class Component {
   isGenerated: boolean = false;
   output: GeneratedComponent | undefined;
-  constructor(readonly component: ComponentType) {}
+  constructor(readonly component: TComponent) {}
   async generate(
     componentRegisty: ComponentRegistry,
     generatorRegistry: GeneratorRegistry
@@ -19,9 +18,6 @@ export class Component {
       this.output = await generator({
         componentRegisty,
         component: this.component,
-        args: this.component.args,
-        imports: this.component.import,
-        name: this.component.name,
       });
       this.isGenerated = true;
     }

@@ -37,3 +37,6 @@ export const importSchema = z.discriminatedUnion("type", [
   moduleImportSchema,
   componentImportSchema,
 ]);
+
+
+export type TImport = z.infer<typeof importSchema>;

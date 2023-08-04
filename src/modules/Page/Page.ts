@@ -1,23 +1,15 @@
 import fs from "fs";
-import { ComponentRegistry } from "../component/ComponentRegistry";
+import { ComponentRegistry } from "../ComponentM/ComponentRegistry";
 import ejs from "ejs";
+import { TPage } from "@/types";
 
 export class Page {
   isGenerated: boolean = false;
   content: string | undefined;
-  constructor(private config: PageType) {}
+  constructor(private config: TPage) {}
 
-  async generate(componentRegistry: ComponentRegistry) {
-    const component = componentRegistry.get(this.config.component);
-    if (!component) throw new Error("Component not found");
-    if (!component.isGenerated) throw new Error("Component not generated");
-
-    this.content = await ejs.renderFile(
-      "./src/templates/pages/page.ejs",
-      {
-        path: component?.output?.path,
-      }
-    );
+  async generate() {
+    this.content = await ejs.renderFile("./src/templates/pages/page.ejs", {});
     this.isGenerated = true;
   }
 
@@ -33,5 +25,3 @@ export class Page {
     fs.writeFileSync(path + "index.astro", this.content!);
   }
 }
-
-export type PageType = { path: string; title: string; component: string };

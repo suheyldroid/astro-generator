@@ -1,18 +1,19 @@
+import { TPage } from "@/types";
 import { App } from "../../App";
-import { Page, PageType } from "./Page";
+import { Page } from "./Page";
 
 export class PageRegistry {
   pages: Page[] = [];
 
   constructor(readonly m: App) {}
-  
-  register(pages: PageType[]) {
+
+  register(pages: TPage[]) {
     this.pages = pages.map((page) => new Page(page));
   }
 
   async generate() {
     for (const page of this.pages) {
-      await page.generate(this.m.componentRegistry);
+      await page.generate();
     }
   }
 

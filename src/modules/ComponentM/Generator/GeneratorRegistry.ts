@@ -1,10 +1,6 @@
-import {
-  Arg,
-  Component as ComponentType,
-  Import,
-} from "../../../../types/component.types";
-import { App } from "../../../App";
-import { ComponentRegistry } from "../../component/ComponentRegistry";
+import { TComponent } from "@/types";
+import { App } from "@/App";
+import { ComponentRegistry } from "../ComponentRegistry";
 
 export class GeneratorRegistry {
   private generators: Record<string, ComponentGenerator<any>> = {};
@@ -20,11 +16,8 @@ export class GeneratorRegistry {
   }
 }
 
-export type ComponentGenerator<T = ComponentType> = (componentData: {
+export type ComponentGenerator<T = TComponent> = (componentData: {
   componentRegisty: ComponentRegistry;
-  name: string;
-  imports: Import[];
-  args: Arg[];
   component: T;
 }) => Promise<GeneratedComponent>;
 

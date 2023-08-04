@@ -7,3 +7,5 @@ export const pageSchema = z.object({
   content: z.string(),
   imports: z.array(importSchema),
 });
+
+export type TPage = z.infer<typeof pageSchema>;
