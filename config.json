@@ -1,41 +1,47 @@
 {
-  "routes": [
+  "app": {
+    "name": "MyApp"
+  },
+  "pages": [
     {
       "title": "Home Page",
       "path": "/",
-      "component": "1"
+      "content": "<Blogs/>",
+      "imports": []
     }
   ],
 
   "components": [
     {
       "id": "1",
-      "type": "classic",
+      "type": "astro",
       "name": "Page Component",
-      "serverSideJs": "const a = 1;",
-      "clientSideJs": "console.log(a)",
-      "html": "<h1>{a}</h1><Component_2 client:idle/>",
-      "args": [
+      "tagName": "AstroComponent",
+      "serverJs": "const a = 1;",
+      "clientJs": "console.log(a)",
+      "content": "<h1>{a}</h1><Component_2 client:idle/>",
+      "props": [
         {
           "name": "arg1",
           "type": "string",
           "defaultValue": "arg 1 default val"
         }
       ],
-      "import": [
+      "imports": [
         {
           "type": "component",
-          "id": "2"
+          "componentId": "2"
         }
       ]
     },
     {
       "id": "2",
       "type": "react",
+      "tagName": "ReactComponent",
       "name": "React Counter Component",
-      "import": [
+      "imports": [
         {
-          "from": "react",
+          "module": "react",
           "type": "module",
           "import": {
             "type": "named",
@@ -43,8 +49,8 @@
           }
         }
       ],
-      "jsx": "const [counter, setCounter] = useState(0); \n return <><h1>{counter}</h1> <button onClick={() => setCounter(counter + 1)}>Add</button></>",
-      "args": [
+      "content": "const [counter, setCounter] = useState(0); \n return <><h1>{counter}</h1> <button onClick={() => setCounter(counter + 1)}>Add</button></>",
+      "props": [
         {
           "name": "arg1",
           "type": "string",
