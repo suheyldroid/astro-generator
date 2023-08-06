@@ -7,4 +7,7 @@ export type {
   TPage,
   TProp as TProps,
   TReactComponent,
-} from "./schemas";
+} from "../validation/schemas";
+
+export type { TComponentGenerator } from "./generator.types";
+

@@ -1,39 +1,36 @@
 import { Astro } from "./modules/Astro";
-import {
-  ComponentGenerator,
-  GeneratorRegistry,
-} from "./modules/ComponentM/Generator/GeneratorRegistry";
+import { GeneratorRegistry } from "./modules/ComponentM/Generator/GeneratorRegistry";
 import { PageRegistry } from "./modules/Page/PageRegistry";
 import { ComponentRegistry } from "./modules/ComponentM/ComponentRegistry";
-import { TConfig } from "@/types";
+import { TComponentGenerator, TConfig } from "@/services/types";
+import { PathResolver } from "./modules/PathResolver/PathResolver";
 
 export class App {
   astro: Astro;
   componentRegistry: ComponentRegistry;
   pageRegistry: PageRegistry;
   generatorRegistry: GeneratorRegistry;
-
+  pathResolver: PathResolver;
   constructor(
     readonly config: TConfig,
-    readonly generators: Record<string, ComponentGenerator<any>>
+    readonly generators: Record<string, TComponentGenerator<any>>
   ) {
     this.astro = new Astro(this);
     this.componentRegistry = new ComponentRegistry(this);
     this.pageRegistry = new PageRegistry(this);
     this.generatorRegistry = new GeneratorRegistry(this);
+    this.pathResolver = new PathResolver(this);
   }
 
   async initialize() {
-    await this.astro.initialize();
+    /* await this.astro.initialize(); */
     this.componentRegistry.register(this.config.components);
-    this.pageRegistry.register(this.config.routes);
+    this.pageRegistry.register(this.config.pages);
     this.generatorRegistry.register(this.generators);
   }
 
-  async setup() {
+  async generate() {
     await this.componentRegistry.generate();
     await this.pageRegistry.generate();
-    this.componentRegistry.sync();
-    this.pageRegistry.sync();
   }
 }

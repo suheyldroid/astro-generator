@@ -1,28 +1,21 @@
-import { ComponentGenerator } from "./GeneratorRegistry";
-
-import { prepareImports } from "../../../helpers/generateImports";
 import ejs from "ejs";
-import { TReactComponent } from "@/types";
+import { TComponentGenerator, TReactComponent } from "@/services/types";
 
-const ReactGenerator: ComponentGenerator<TReactComponent> = async ({
+const ReactGenerator: TComponentGenerator<TReactComponent> = async ({
   componentRegisty,
   component,
+  imports,
 }) => {
-  const fileName = "component_" + component.id + ".jsx";
-  const path = "/components/" + fileName;
   const content = await ejs.renderFile("./src/templates/components/react.ejs", {
     component,
     name: component.name,
-    imports: prepareImports(component.imports, componentRegisty),
+    imports,
     props: component.props.map((prop) => prop.name),
     content: component.content,
     id: component.id,
   });
-  return {
-    content,
-    fileName,
-    path,
-  };
+
+  return content;
 };
 
 export { ReactGenerator };

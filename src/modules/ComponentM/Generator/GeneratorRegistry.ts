@@ -1,13 +1,12 @@
-import { TComponent } from "@/types";
+import { TComponentGenerator } from "@/services/types";
 import { App } from "@/App";
-import { ComponentRegistry } from "../ComponentRegistry";
 
 export class GeneratorRegistry {
-  private generators: Record<string, ComponentGenerator<any>> = {};
+  private generators: Record<string, TComponentGenerator<any>> = {};
 
   constructor(readonly m: App) {}
 
-  register(generators: Record<string, ComponentGenerator<any>>) {
+  register(generators: Record<string, TComponentGenerator<any>>) {
     this.generators = generators;
   }
 
@@ -15,14 +14,3 @@ export class GeneratorRegistry {
     return this.generators[key];
   }
 }
-
-export type ComponentGenerator<T = TComponent> = (componentData: {
-  componentRegisty: ComponentRegistry;
-  component: T;
-}) => Promise<GeneratedComponent>;
-
-export type GeneratedComponent = {
-  content: string;
-  fileName: string;
-  path: string;
-};

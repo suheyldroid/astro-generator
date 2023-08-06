@@ -4,8 +4,9 @@
   },
   "pages": [
     {
+      "id": "1",
       "title": "Home Page",
-      "path": "/",
+      "path": "/test/asd",
       "content": "<Blogs/>",
       "imports": []
     }

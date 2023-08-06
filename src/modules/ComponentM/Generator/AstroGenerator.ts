@@ -1,31 +1,23 @@
 import ejs from "ejs";
-
-import { prepareImports } from "../../../helpers/generateImports";
-import { ComponentGenerator } from "./GeneratorRegistry";
 import _path from "path";
-import { TAstroComponent } from "@/types";
+import { TAstroComponent, TComponentGenerator } from "@/services/types";
 import { TProp } from "@/services/validation/schemas";
-export const AstroGenerator: ComponentGenerator<TAstroComponent> = async ({
+
+export const AstroGenerator: TComponentGenerator<TAstroComponent> = async ({
   componentRegisty,
   component,
+  imports,
 }) => {
-  const fileName = "component_" + component.id + ".astro";
-  const path = "/components/" + fileName;
-
   const content = await ejs.renderFile("./src/templates/components/astro.ejs", {
     name: component.name,
-    imports: prepareImports(component.imports, componentRegisty),
+    imports,
     props: prepareArgs(component.props),
     serverJs: component.serverJs,
     clientJs: component.clientJs,
     clientArgs: component.clientProps,
     html: component.content,
   });
-  return {
-    content,
-    fileName,
-    path,
-  };
+  return content;
 };
 
 const prepareArgs = (componentArgs: TProp[]) => {

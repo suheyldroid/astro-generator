@@ -1,4 +1,4 @@
-import { TPage } from "@/types";
+import { TPage } from "@/services/types";
 import { App } from "../../App";
 import { Page } from "./Page";
 
@@ -17,7 +17,9 @@ export class PageRegistry {
     }
   }
 
-  sync() {
-    this.pages.forEach((page) => page.sync());
+  get(pageId: string): Page {
+    const page = this.pages.find((page) => page.page.id === pageId);
+    if (!page) throw new Error("Page not found");
+    return page;
   }
 }

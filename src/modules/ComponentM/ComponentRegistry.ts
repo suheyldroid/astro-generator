@@ -1,9 +1,6 @@
 import { App } from "@/App";
-import fs from "fs";
-import { GeneratedComponent } from "./Generator/GeneratorRegistry";
-
 import { Component } from "./Component";
-import { TComponent } from "@/types";
+import { TComponent } from "@/services/types";
 
 export class ComponentRegistry {
   private components: Component[] = [];
@@ -13,25 +10,20 @@ export class ComponentRegistry {
   register(components: TComponent[]) {
     this.components = components.map((component) => new Component(component));
   }
-  get(id: string) {
-    return this.components.find((component) => component.component.id === id);
+  get(id: string): Component {
+    const component = this.components.find(
+      (component) => component.component.id === id
+    );
+    if (!component) throw new Error(`Component not found: ${id}`);
+    return component;
   }
   async generate() {
     for (const component of this.components) {
-      await component.generate(this, this.m.generatorRegistry);
+      await component.generate(
+        this,
+        this.m.generatorRegistry,
+        this.m.pathResolver.getComponentImports(component.component.id)
+      );
     }
-  }
-  sync() {
-    this.components.forEach((component) => {
-      if (component.isGenerated) {
-        this.__sync(component.output!);
-      }
-    });
-  }
-  private __sync(generatedComponent: GeneratedComponent) {
-    fs.writeFileSync(
-      `astro/src${generatedComponent.path}`,
-      generatedComponent.content
-    );
   }
 }

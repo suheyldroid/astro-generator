@@ -1,25 +1,33 @@
-import { TComponent } from "@/types";
-import {
-  GeneratedComponent,
-  GeneratorRegistry,
-} from "./Generator/GeneratorRegistry";
+import { TComponent } from "@/services/types";
+import { GeneratorRegistry } from "./Generator/GeneratorRegistry";
 import { ComponentRegistry } from "./ComponentRegistry";
 
 export class Component {
-  isGenerated: boolean = false;
-  output: GeneratedComponent | undefined;
+  _code: string | undefined;
   constructor(readonly component: TComponent) {}
+
   async generate(
     componentRegisty: ComponentRegistry,
-    generatorRegistry: GeneratorRegistry
+    generatorRegistry: GeneratorRegistry,
+    imports: string[]
   ) {
     const generator = generatorRegistry.get(this.component.type);
+
     if (generator) {
-      this.output = await generator({
+      this._code = await generator({
         componentRegisty,
         component: this.component,
+        imports,
       });
-      this.isGenerated = true;
     }
+  }
+
+  get isGenerated() {
+    return !!this._code;
+  }
+
+  get code(): string {
+    if (!this._code) throw new Error("Component is not generated yet");
+    return this._code;
   }
 }
