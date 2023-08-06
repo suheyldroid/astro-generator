@@ -1,5 +1,9 @@
 ---
-import Component from "..<%= path %>";
+// <%= id %>
+// <%= title %>
+<% imports.forEach(_import => { %>
+    <%- _import %>
+<% }) %> 
 ---
 
-<Component />
+<%- content %>

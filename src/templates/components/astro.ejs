@@ -4,12 +4,12 @@
 <% imports.forEach(_import => { %>
 <%- _import %> 
 <% }) %>
-<%= args %>
-<%= serverJs %>
+<%- props %>
+<%- serverJs %>
 ---
 
-<%- html %>
+<%- content %>
 
-<script define:vars={{<%- clientArgs.join(", ") %>}}>
+<script define:vars={{<%- clientProps.join(", ") %>}}>
 <%- clientJs %>
 </script>

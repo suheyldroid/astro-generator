@@ -20,10 +20,10 @@ export class ComponentRegistry {
   async generate() {
     for (const component of this.components) {
       await component.generate(
-        this,
         this.m.generatorRegistry,
-        this.m.pathResolver.getComponentImports(component.component.id)
+        this.m.pathResolver.component.import(component.component)
       );
+      this.m.pathResolver.sync.component(component);
     }
   }
 }

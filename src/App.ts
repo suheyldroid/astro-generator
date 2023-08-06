@@ -23,7 +23,7 @@ export class App {
   }
 
   async initialize() {
-    /* await this.astro.initialize(); */
+    await this.astro.initialize();
     this.componentRegistry.register(this.config.components);
     this.pageRegistry.register(this.config.pages);
     this.generatorRegistry.register(this.generators);

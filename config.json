@@ -6,9 +6,18 @@
     {
       "id": "1",
       "title": "Home Page",
-      "path": "/test/asd",
-      "content": "<Blogs/>",
-      "imports": []
+      "path": "/",
+      "content": "<AstroComponent/><ReactComponent client:idle/><ReactComponent client:idle/>",
+      "imports": [
+        {
+          "type": "component",
+          "componentId": "1"
+        },
+        {
+          "type": "component",
+          "componentId": "2"
+        }
+      ]
     }
   ],
 
@@ -20,7 +29,7 @@
       "tagName": "AstroComponent",
       "serverJs": "const a = 1;",
       "clientJs": "console.log(a)",
-      "content": "<h1>{a}</h1><Component_2 client:idle/>",
+      "content": "<h1>{a}</h1><ReactComponent client:idle/>",
       "props": [
         {
           "name": "arg1",

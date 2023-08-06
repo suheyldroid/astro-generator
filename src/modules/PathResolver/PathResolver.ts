@@ -1,87 +1,69 @@
 import { App } from "@/App";
 import { TImport } from "@/services/types";
 import { render } from "ejs";
-import fs from "fs";
 import path from "path";
-
-const ComponentExts = {
-  react: "jsx",
-  astro: "astro",
-  vue: "vue",
-  svelte: "svelte",
-  angular: "ts",
-};
-
-const filePathInfo: Record<FileType, FilePathInfo> = {
-  component: {
-    path: "src/components/",
-    fileName: "component_<%= id %>.<%= ext %>",
-  },
-  page: {
-    path: "src/pages/<%= path %>",
-    fileName: "index.astro",
-  },
-};
+import { ComponentPathResolver } from "./resolvers/ComponentPathResolver";
+import { PagePathResolver } from "./resolvers/PagePathResolver";
+import { TemplatePathResolver } from "./resolvers/TemplatePathResolver";
+import { Sync } from "./Sync";
 
 export class PathResolver {
-  constructor(readonly app: App) {}
-
-  trimPath(path: string) {
-    return path.split("/").filter(Boolean).join("/");
+  private _componentResolver: ComponentPathResolver;
+  private _pageResolver: PagePathResolver;
+  private _templateResolver: TemplatePathResolver;
+  private _sync: Sync;
+  constructor(readonly app: App) {
+    this._componentResolver = new ComponentPathResolver(this);
+    this._pageResolver = new PagePathResolver(this);
+    this._templateResolver = new TemplatePathResolver();
+    this._sync = new Sync(this);
   }
 
-  getComponentPath() {
-    return this.trimPath(filePathInfo.component.path);
+  get component() {
+    return this._componentResolver;
   }
 
-  getPagePath(pageId: string) {
-    const page = this.app.pageRegistry.get(pageId);
-    const pagePath = render(filePathInfo.page.path, {
-      path: page.page.path,
-    });
-    return this.trimPath(pagePath);
+  get page() {
+    return this._pageResolver;
   }
 
-  getComponentName(componentId: string) {
-    const component = this.app.componentRegistry.get(componentId);
-    return render(filePathInfo.component.fileName, {
-      id: component.component.id,
-      ext: ComponentExts[component.component.type],
-    });
+  get template() {
+    return this._templateResolver;
   }
 
-  getPageFullPath(pageId: string) {
-    return path.join(this.getPagePath(pageId), filePathInfo.page.fileName);
-  }
-
-  getComponentFullPath(componentId: string) {
-    return path.join(
-      this.getComponentPath(),
-      this.getComponentName(componentId)
-    );
+  get projectRoot() {
+    return "astro";
   }
 
   relativeBetween(from: string, to: string) {
-    return path.relative(from, to);
+    const fromDir = path.dirname(from);
+    const relative = path.relative(fromDir, to);
+    return `./${relative}`;
   }
 
   import(importTo: string, imports: TImport[]) {
+    const importTemplates = this.template.import;
     return imports.map((imp) => {
       switch (imp.type) {
         case "component":
-          const componentPath = this.getComponentFullPath(imp.componentId);
-          return this.relativeBetween(importTo, componentPath);
+          const component = this.app.componentRegistry.get(imp.componentId);
+          const componentPath = this.component.fullPath(component.component);
+          return render(importTemplates.component, {
+            tagName: component.component.tagName,
+            path: this.relativeBetween(importTo, componentPath),
+          });
         case "module":
           switch (imp.import.type) {
             case "named":
-              return render(importTemplate.module.named, {
+              return render(importTemplates.module.named, {
                 names: imp.import.names,
                 module: imp.module,
               });
+
             case "default":
               const template = imp.import.all
-                ? importTemplate.module.all
-                : importTemplate.module.default;
+                ? importTemplates.module.all
+                : importTemplates.module.default;
               return render(template, {
                 name: imp.import.type,
               });
@@ -94,51 +76,7 @@ export class PathResolver {
     });
   }
 
-  importToPage(pageId: string) {
-    const page = this.app.pageRegistry.get(pageId);
-    const imports = page.page.imports;
-    return this.import(this.getPageFullPath(pageId), imports);
+  get sync() {
+    return this._sync;
   }
-
-  getComponentImports(componentId: string) {
-    const component = this.app.componentRegistry.get(componentId);
-    const imports = component.component.imports;
-    return this.import(this.getComponentFullPath(componentId), imports);
-  }
-
-  /* sync(type: FileType, id: string) {
-    switch (type) {
-      case FileType.Component:
-        const component = this.app.componentRegistry.get(id);
-        const path = this.resolveComponentPath(id);
-        fs.writeFileSync(path, component.code!);
-        break;
-      case FileType.Page:
-        const page = this.app.pageRegistry.get(id);
-        const pagePath = this.resolvePagePath(id);
-        fs.writeFileSync(pagePath, page.code!);
-        break;
-      default:
-        throw new Error("Invalid file type");
-    }
-  } */
 }
-
-const importTemplate = {
-  component: "import <%= name %> from '<%= path %>'",
-  module: {
-    named: "import { <% names.join(', ') %> } from '<%= module %>'",
-    default: "import <%= name %> from '<%= module %>'",
-    all: "import * as <%= name %> from '<%= module %>'",
-  },
-};
-
-export enum FileType {
-  Component = "component",
-  Page = "page",
-}
-
-type FilePathInfo = {
-  path: string;
-  fileName: string;
-};

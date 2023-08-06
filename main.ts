@@ -8,15 +8,14 @@ const config = validateConfig(JSON.parse(configStr));
 
 const app = new App(config, {
   react: ReactGenerator,
-  classic: AstroGenerator,
+  astro: AstroGenerator,
 });
 
 (async () => {
   await app.initialize();
-  /*   await app.generate(); */
+  await app.generate();
 })();
 
-// TODO: Path Resolver
-// component import
 // parametrized config
-// generator ve ejs düzenlemesi
+
+//Meta layout

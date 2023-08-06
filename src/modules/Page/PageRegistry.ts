@@ -13,7 +13,9 @@ export class PageRegistry {
 
   async generate() {
     for (const page of this.pages) {
-      await page.generate();
+      const imports = this.m.pathResolver.page.import(page.page);
+      await page.generate(imports);
+      this.m.pathResolver.sync.page(page);
     }
   }
 

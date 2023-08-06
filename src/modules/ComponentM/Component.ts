@@ -1,21 +1,14 @@
 import { TComponent } from "@/services/types";
 import { GeneratorRegistry } from "./Generator/GeneratorRegistry";
-import { ComponentRegistry } from "./ComponentRegistry";
 
 export class Component {
-  _code: string | undefined;
+  private _code: string | undefined;
   constructor(readonly component: TComponent) {}
 
-  async generate(
-    componentRegisty: ComponentRegistry,
-    generatorRegistry: GeneratorRegistry,
-    imports: string[]
-  ) {
+  async generate(generatorRegistry: GeneratorRegistry, imports: string[]) {
     const generator = generatorRegistry.get(this.component.type);
-
     if (generator) {
       this._code = await generator({
-        componentRegisty,
         component: this.component,
         imports,
       });
